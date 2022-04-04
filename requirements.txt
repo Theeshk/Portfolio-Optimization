@@ -6,3 +6,4 @@ pandas_datareader==0.10.0
 pyportfolioopt==1.5.2
 streamlit==1.8.0
 yfinance==0.1.70
+click==8.0

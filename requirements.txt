@@ -1,0 +1,8 @@
+cvxpy==1.2.0
+matplotlib==3.5.1
+numpy==1.22.3
+pandas==1.4.1
+pandas_datareader==0.10.0
+pyportfolioopt==1.5.2
+streamlit==1.8.0
+yfinance==0.1.70

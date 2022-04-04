@@ -7,4 +7,3 @@ PyportfolioOpt==1.2.1
 streamlit==1.8.0
 yfinance==0.1.70
 click==8.0
-GLPK_MI

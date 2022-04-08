@@ -10,26 +10,28 @@ import yfinance as yf
 
 st.title('Portfolio Optimization')
 st.subheader('This Application performs a historical portfolio analysis and returns an optimal portfolio for a given investment and selected securities of your choice using Efficient Frontier Model')
-st.subheader('Please read the instructions carefully') 
+st.subheader('Please read the instructions carefully, sample data already exists in the input fields for your reference') 
 st.subheader('Remember Investments are subject to Market Risk!')
 st.subheader('Good Luck on your Investment Journey :)')
 
 symbol = pd.read_csv("https://datahub.io/core/s-and-p-500-companies/r/0.csv")["Symbol"].values
 
-
-warning_1 = st.sidebar.write("Select the tickers in which you want to Invest") 
+ 
 Assets = st.sidebar.multiselect(
-        "Enter the Security Ticker",
+        "Select the Security Ticker",
 	    list(symbol),
 	    ["AAPL", "FB"])
 
+warning_1 = st.sidebar.write("Select the tickers in which you want to Invest") 
 
 
-warning_2 = st.sidebar.write("Ensure the weights sum up to 1, these weights are used in calculation of the Covariance of the Portfolio selected") 
 weights_str = st.sidebar.text_input('Enter The Investment Weights', '0.2,0.8')
+warning_2 = st.sidebar.markdown("Ensure the weights sum up to 1") 
+warning_3 = st.sidebar.markdown("The weights represent a hypothetical % value of how capital are allocated of the selected securities.  It will be used to calculate the Portfolio Variance in this Application")
 
-warning_3 = st.sidebar.write("The Investment you wish to invest can range from USD500 - USD25000")
 investment = st.sidebar.slider('Enter The Initial Investment', min_value=500, max_value=25000, value=5000)
+warning_4 = st.sidebar.write("The Investment you wish to invest can range from USD500 - USD50000")
+
 weights_list = weights_str.split(",")
 
 weights1 = []
@@ -51,6 +53,7 @@ for stocks in Assets:
 
 #describe data
 st.subheader('Adj Closing Prices from 2021 01 01 - Today')
+st.markdown('The closing prices after adjusting factors that affect the stock price after the market closes')
 st.write(df)
 
 
@@ -83,33 +86,33 @@ st.pyplot(fig)
 
 returns = df.pct_change()
 st.subheader("Returns % Change")
+st.markdown("The change in stock price as a percentage of the previous day's closing price")
 st.write(returns)
 
 st.subheader("Covariance")
+st.markdown("It measure how one stock moves in realtion to another")
 cov_matrix_annual = returns.cov() *252
 st.write(cov_matrix_annual)
 
 
-st.subheader("Portfolio Covariance")
+st.subheader("Portfolio Annual Variance")
+st.markdown("Is a measure of the dispersion of returns of a portfolio")
 port_variance = np.dot(weights.T, np.dot(cov_matrix_annual, weights))
-st.write(port_variance)
+percent_pvar = str( round(port_variance,2) * 100) +  '%'
+st.write(percent_pvar)
 
-st.subheader("Portfolio Volatility")
+st.subheader("Portfolio Annual Volatility")
+st.markdown("Is a measure of a portfolio's overall risk")
 port_volatility = np.sqrt(port_variance)
-st.write(port_volatility)
+percent_pvol = str( round(port_volatility,2) * 100) +  '%'
+st.write(percent_pvol)
 
 #Annual portfolio Returns
-st.subheader("Portfolio Annual Returns")
+st.subheader("Expected Annual Portfolio returns")
+st.markdown("Is the weighted average of its individual components' returns")
 portfolioannualreturs = np.sum(returns.mean() * weights) * 252
-st.write(portfolioannualreturs)
-
-percent_var = str( round(port_variance,2) * 100) +  '%'
-percent_vols = str( round(port_volatility,2) * 100) +  '%'
-percent_ret = str( round(portfolioannualreturs,2) * 100) +  '%'
-
-print('Expected annual returns: '+ percent_ret)
-print('Annual Volatility: '+ percent_vols)
-print('Annual Variance: '+ percent_var)
+percent_ar = str( round(portfolioannualreturs,2) * 100) +  '%'
+st.write(percent_ar)
 
 from pypfopt.efficient_frontier import EfficientFrontier
 from pypfopt import risk_models
